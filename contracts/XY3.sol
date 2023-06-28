@@ -69,20 +69,11 @@ contract XY3 is
         _;
     }
 
-    /**
-     * @dev Init contract
-     *
-     * @param _admin - Initial admin of this contract.
-     * @param _addressProvider - AddressProvider contract
-     */
-    constructor(
-        address _admin,
-        address _addressProvider
-    )
-        Config(_admin, _addressProvider)
-        LoanStatus()
-        InterceptorManager()
-    {
+    bool private initialized;
+
+    function initialize(address _admin, address _addressProvider) external {
+        require(!initialized, "XY3 Contract is already initialized");
+        Config_init(_admin, _addressProvider);
     }
 
     /**
@@ -135,7 +126,10 @@ contract XY3 is
         );
 
         if (_extraDeal.target != address(0)) {
-            require(getAgentPermit(_extraDeal.target, _extraDeal.selector), "Not valide agent");
+            require(
+                getAgentPermit(_extraDeal.target, _extraDeal.selector),
+                "Not valide agent"
+            );
             bytes memory data = abi.encodeWithSelector(
                 _extraDeal.selector,
                 msg.sender,
@@ -452,8 +446,12 @@ contract XY3 is
         uint256 xy3NftId = getLoanState(_loanId).xy3NftId;
         loan = loanDetails[_loanId];
 
-        borrower = IERC721(getAddressProvider().getBorrowerNote()).ownerOf(xy3NftId);
-        lender = IERC721(getAddressProvider().getLenderNote()).ownerOf(xy3NftId);
+        borrower = IERC721(getAddressProvider().getBorrowerNote()).ownerOf(
+            xy3NftId
+        );
+        lender = IERC721(getAddressProvider().getLenderNote()).ownerOf(
+            xy3NftId
+        );
     }
 
     /**
@@ -665,7 +663,11 @@ contract XY3 is
         return uint256(loan.loanStart) + uint256(loan.loanDuration);
     }
 
-    function _serviceFee(Offer memory offer, uint32 loanId, address target) internal {
+    function _serviceFee(
+        Offer memory offer,
+        uint32 loanId,
+        address target
+    ) internal {
         if (target != address(0)) {
             IAddressProvider addressProvider = getAddressProvider();
             address nftAsset = offer.nftAsset;
@@ -674,20 +676,21 @@ contract XY3 is
             address serviceFeeAddr = addressProvider.getServiceFee();
             uint16 serviceFeeRate = 0;
             uint256 fee = 0;
-            if(serviceFeeAddr != address(0)) {
+            if (serviceFeeAddr != address(0)) {
                 serviceFeeRate = IServiceFee(serviceFeeAddr).getServiceFee(
                     target,
                     msg.sender,
                     nftAsset
                 );
-                if(serviceFeeRate > 0) {
-                    fee = borrowAmount * serviceFeeRate / HUNDRED_PERCENT;
-                    IDelegateV3(addressProvider.getTransferDelegate()).erc20Transfer(
-                        msg.sender,
-                        adminFeeReceiver,
-                        borrowAsset,
-                        fee
-                    );
+                if (serviceFeeRate > 0) {
+                    fee = (borrowAmount * serviceFeeRate) / HUNDRED_PERCENT;
+                    IDelegateV3(addressProvider.getTransferDelegate())
+                        .erc20Transfer(
+                            msg.sender,
+                            adminFeeReceiver,
+                            borrowAsset,
+                            fee
+                        );
                 }
 
                 emit ServiceFee(loanId, target, serviceFeeRate, fee);

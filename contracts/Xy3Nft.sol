@@ -69,7 +69,7 @@ contract Xy3Nft is ERC721, AccessControl {
      * @dev Mint a new token and assigned to receiver
      *
      * @param _to The receiver address
-     * @param _tokenId The token ID of the Xy3 
+     * @param _tokenId The token ID of the Xy3
      * @param _data The first 32 bytes is an integer for the loanId in Xy3
      */
     function mint(
@@ -88,10 +88,9 @@ contract Xy3Nft is ERC721, AccessControl {
      * @dev Set baseURI by URI manager
      * @param _customBaseURI - Base URI for the Xy3NFT
      */
-    function setBaseURI(string memory _customBaseURI)
-        external
-        onlyRole(MANAGER_ROLE)
-    {
+    function setBaseURI(
+        string memory _customBaseURI
+    ) external onlyRole(MANAGER_ROLE) {
         _setBaseURI(_customBaseURI);
     }
 
@@ -99,13 +98,9 @@ contract Xy3Nft is ERC721, AccessControl {
      * @dev Defined by IERC165
      * @param _interfaceId The queried selector Id
      */
-    function supportsInterface(bytes4 _interfaceId)
-        public
-        view
-        virtual
-        override(ERC721, AccessControl)
-        returns (bool) 
-    {
+    function supportsInterface(
+        bytes4 _interfaceId
+    ) public view virtual override(ERC721, AccessControl) returns (bool) {
         return super.supportsInterface(_interfaceId);
     }
 
@@ -113,11 +108,7 @@ contract Xy3Nft is ERC721, AccessControl {
      * @dev Check the token exist or not.
      * @param _tokenId The ERC721 token id
      */
-    function exists(uint256 _tokenId)
-        external
-        view
-        returns (bool)
-    {
+    function exists(uint256 _tokenId) external view returns (bool) {
         return _exists(_tokenId);
     }
 
@@ -130,16 +121,10 @@ contract Xy3Nft is ERC721, AccessControl {
         }
     }
 
-    /** 
+    /**
      * @dev Base URI for concat {tokenURI} by `baseURI` and `tokenId`.
      */
-    function _baseURI()
-        internal
-        view
-        virtual
-        override
-        returns (string memory)
-    {
+    function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
     }
 
@@ -149,7 +134,9 @@ contract Xy3Nft is ERC721, AccessControl {
      */
     function _setBaseURI(string memory _customBaseURI) internal virtual {
         baseURI = bytes(_customBaseURI).length > 0
-            ? string(abi.encodePacked(_customBaseURI, _getChainID().toString(), "/"))
+            ? string(
+                abi.encodePacked(_customBaseURI, _getChainID().toString(), "/")
+            )
             : "";
     }
 }

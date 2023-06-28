@@ -4,7 +4,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:testnet_munbai": "npx hardhat run scripts/01.deploy-whole.ts --network munbai",
+    "deploy:localhost": "npx hardhat run scripts/01.deploy-whole.ts --network hardhat",
+    "deploy:testnet_sepolia": "npx hardhat run scripts/01.deploy-whole.ts --network sepolia",
+    "deploy:testnet_astar": "npx hardhat run scripts/01.deploy-whole.ts --network astar",
+    "deploy:testnet_goerli": "npx hardhat run scripts/01.deploy-whole.ts --network goerli",
+    "verify:testnet_munbai": "npx hardhat run verify/01.verify-whole.ts --network munbai",
+    "verify:testnet_sepolia": "npx hardhat run verify/01.verify-whole.ts --network sepolia",
+    "verify:testnet_astar": "npx hardhat run verify/01.verify-whole.ts --network astar"
   },
   "repository": {
     "type": "git",

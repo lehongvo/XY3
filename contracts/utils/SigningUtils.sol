@@ -31,13 +31,19 @@ library SigningUtils {
         Offer memory _offer,
         uint256 _nftId,
         Signature memory _signature
-    ) public view returns(bool) {
+    ) public view returns (bool) {
         require(block.timestamp <= _signature.expiry, "Signature expired");
         if (_signature.signer == address(0)) {
             return false;
         } else {
             bytes32 message = keccak256(
-                abi.encodePacked(getEncodedOffer(_offer), _nftId, getEncodedSignature(_signature), address(this), getChainID())
+                abi.encodePacked(
+                    getEncodedOffer(_offer),
+                    _nftId,
+                    getEncodedSignature(_signature),
+                    address(this),
+                    getChainID()
+                )
             );
             return
                 SignatureChecker.isValidSignatureNow(
@@ -62,7 +68,12 @@ library SigningUtils {
             return false;
         } else {
             bytes32 message = keccak256(
-                abi.encodePacked(getEncodedOffer(_offer), getEncodedSignature(_signature), address(this), getChainID())
+                abi.encodePacked(
+                    getEncodedOffer(_offer),
+                    getEncodedSignature(_signature),
+                    address(this),
+                    getChainID()
+                )
             );
 
             return
@@ -77,23 +88,31 @@ library SigningUtils {
     /**
      * @dev Helper function.
      */
-    function getEncodedOffer(Offer memory _offer) internal pure returns (bytes memory data) {
-            data = 
-                abi.encodePacked(
-                    _offer.borrowAsset,
-                    _offer.borrowAmount,
-                    _offer.repayAmount,
-                    _offer.nftAsset,
-                    _offer.borrowDuration,
-                    _offer.timestamp,
-                    _offer.extra
-                );
+    function getEncodedOffer(
+        Offer memory _offer
+    ) internal pure returns (bytes memory data) {
+        data = abi.encodePacked(
+            _offer.borrowAsset,
+            _offer.borrowAmount,
+            _offer.repayAmount,
+            _offer.nftAsset,
+            _offer.borrowDuration,
+            _offer.timestamp,
+            _offer.extra
+        );
     }
 
     /**
      * @dev Helper function.
      */
-    function getEncodedSignature(Signature memory _signature) internal pure returns (bytes memory) {
-        return abi.encodePacked(_signature.signer, _signature.nonce, _signature.expiry);
+    function getEncodedSignature(
+        Signature memory _signature
+    ) internal pure returns (bytes memory) {
+        return
+            abi.encodePacked(
+                _signature.signer,
+                _signature.nonce,
+                _signature.expiry
+            );
     }
 }
