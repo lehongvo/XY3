@@ -69,8 +69,6 @@ contract XY3 is
         _;
     }
 
-    bool private initialized;
-
     function initialize(address _admin, address _addressProvider) external {
         require(!initialized, "XY3 Contract is already initialized");
         Config_init(_admin, _addressProvider);
