@@ -6,43 +6,57 @@ const astar = "https://evm.astar.network/";
 const shibuya = "https://evm.shibuya.astar.network";
 const sepolia = "https://sepolia.infura.io/v3/4a5279230bb442ada4c296b1992ec4c4";
 
+// 0x4a6f4FFd8e7164235E5aA7Db2B8425D3E3a7a165
+// 0x9b3f40286411b33774409392A4b9b5Df0Db9503a
+// ["13", "123145645656", "0x9b3f40286411b33774409392A4b9b5Df0Db9503a", "0x6c8330dbdc12a1f303f0e1dbdff58bd42f00120d23e53a3981deb343a8ee246913959163fe56490ef5e05380dbd8d99809a920aeac04e5b2c282391d72fd54c21c"]
+// ["13", "123145645656", "0x9b3f40286411b33774409392A4b9b5Df0Db9503a", "0x2f4e7c7c39ca420839392925a08f1c0f60a781d95aea8d4d3f6b3a3658399c9b71e2d4288e894e0461521f6ba3c96cec2dce130616113f82de50b176787ffaf31c"]
+// ["1000000000000000000", "1500000000000000000", "0x6b75DB7549852Ffb5A17FFf61222124cFEBC55B3", "3456000", "0x7e4eE271E21A9abF20849F09713C32454425FB50", "123123", []]
+
+
+["0x0000000000000000000000000000000000000000", "0x00000000", "0x", 0]
+const extraData = {
+  target: "0x0000000000000000000000000000000000000000",
+  selector: "0x00000000",
+  data: "0x",
+  referral: "0"
+}
+
 const signature = {
-  nonce: "12",
+  nonce: "13",
   expiry: "123145645656",
-  signer: "0x4a6f4FFd8e7164235E5aA7Db2B8425D3E3a7a165",
+  signer: "0x9b3f40286411b33774409392A4b9b5Df0Db9503a",
   signature: "",
 };
 
-// ["12", "123145645656", "0x4a6f4FFd8e7164235E5aA7Db2B8425D3E3a7a165", "0x075ecde5c21683b8c77b94aae93a3133bba6cadef29382b42ba30d2cf3b55aef21f2e3cb1ca7ec2d8f7990c9b4463d63ae05d16cf7a92a19e81f457a88590a4d1c"]
-// ["1000000000000000000", "1500000000000000000", "0xB34f62529FaB8e0b2d3e294503c8F45a989f13A5", "3000000", "0xac82cb4d95fc87239cd527F8422d58DE8CDe2e5C", "123123", []]
 const offer = {
   borrowAmount: "1000000000000000000",
   repayAmount: "1500000000000000000",
-  nftAsset: "0x9a4fC25cca157321Ab05eAbb4f19b1eBeB2a0128",
-  borrowDuration: "3000000",
-  borrowAsset: "0x53f544Da7Fa2F3146eF86097aFdd5B6B90CCBc1c",
+  nftAsset: "0x6b75DB7549852Ffb5A17FFf61222124cFEBC55B3",
+  borrowDuration: "3456000",
+  borrowAsset: "0x7e4eE271E21A9abF20849F09713C32454425FB50",
   timestamp: "123123",
   extra: [],
 };
 
 const privateKey =
-  "f6ac3a901d2170e9fa165491ca443052e6d63d50460b497aa697ef9dca194075";
+  "024a5ead8df0730ba4a1f5d1c5646f19af39b53045466b759f09f40ddf79d232";
 
-const nftId = "0";
+const nftId = "15";
 
-const contractAddress = "0x4D6cF50c646F660Be7Dbf1473eB127f9dA300668";
+const contractAddress = "0xD5aF368841eE94ACCeF5322F3351ac792826dfF0";
 
-const signPersonalMessageIsCollection = async (
-  _offer: any,
-  _nftId: string,
-  _signature: any,
-  _contractAddress: string,
-  _privateKey: string,
-  _network: string
+const signPersonalMessageIsNotCollection = async (
+  _offer,
+  _nftId,
+  _signature,
+  _contractAddress,
+  _privateKey,
+  _network
 ) => {
   try {
     const provider = new ethers.providers.JsonRpcProvider(_network);
-    const chainID = await provider.getNetwork().then((data: any) => data.chainId);
+    const chainID = await provider.getNetwork().then((data) => data.chainId);
+    console.log("ChainID", Number(chainID));
 
     const hash = ethers.utils.solidityKeccak256(
       [
@@ -83,23 +97,23 @@ const signPersonalMessageIsCollection = async (
     const signature = await wallet.signMessage(
       ethers.utils.arrayify(signingMessage)
     );
-    console.log("Signature", signature);
+    console.log("signPersonalMessageIsNotCollection", signature);
     console.log("==========================signPersonalMessageIsCollection=================================");
   } catch (error) {
     console.log(error);
   }
 };
 
-const signPersonalMessageIsNotCollection = async (
-  _offer: any,
-  _signature: any,
-  _contractAddress: string,
-  _privateKey: string,
-  _network: string
+const signPersonalMessageIsCollection = async (
+  _offer,
+  _signature,
+  _contractAddress,
+  _privateKey,
+  _network
 ) => {
   try {
     const provider = new ethers.providers.JsonRpcProvider(_network);
-    const chainID = await provider.getNetwork().then((data: any) => data.chainId);
+    const chainID = await provider.getNetwork().then((data) => data.chainId);
 
     const hash = ethers.utils.solidityKeccak256(
       [
@@ -133,19 +147,17 @@ const signPersonalMessageIsNotCollection = async (
     );
     const sigHashBytes = ethers.utils.arrayify(hash);
     const signingMessage = ethers.utils.hexlify(sigHashBytes);
-    console.log("SigningMessage", signingMessage);
     let wallet = new ethers.Wallet(privateKey, provider);
     const signature = await wallet.signMessage(
       ethers.utils.arrayify(signingMessage)
     );
-    console.log("Signature", signature);
-    console.log("==========================signPersonalMessageIsNotCollection=================================");
+    console.log("signPersonalMessageIsCollection", signature);
   } catch (error) {
     console.log(error);
   }
 };
 
-signPersonalMessageIsCollection(
+signPersonalMessageIsNotCollection(
   offer,
   nftId,
   signature,
@@ -154,7 +166,7 @@ signPersonalMessageIsCollection(
   munbai
 );
 
-signPersonalMessageIsNotCollection(
+signPersonalMessageIsCollection(
   offer,
   signature,
   contractAddress,

@@ -53,13 +53,14 @@ const config: HardhatUserConfig = {
       chainId: 11155111,
       accounts: [process.env.PRIVATE_KEY1!, process.env.PRIVATE_KEY2!],      
       gasPrice: 10000000000,
+      timeout:10000
     },
      astar: {
       url: `https://astar.api.onfinality.io/public`!,
       chainId: 592,
       accounts: [process.env.PRIVATE_KEY1!, process.env.PRIVATE_KEY2!],    
       gasPrice: 20000000000,  
-      gas: 5000000
+      gas: 5000000,
     },
   },
   gasReporter: {

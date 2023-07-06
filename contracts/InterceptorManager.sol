@@ -23,8 +23,20 @@ interface IInterceptor {
 }
 
 abstract contract InterceptorManager is AccessControl {
-    event UpdageInterceptor(uint256 indexed queueId, address indexed nftAsset, uint256 tokenId, address interceptor, bool add);
-    event ExecuteInterceptor(uint256 indexed queueId, address indexed nftAsset, uint256 tokenId, address interceptor, bool before);
+    event UpdageInterceptor(
+        uint256 indexed queueId,
+        address indexed nftAsset,
+        uint256 tokenId,
+        address interceptor,
+        bool add
+    );
+    event ExecuteInterceptor(
+        uint256 indexed queueId,
+        address indexed nftAsset,
+        uint256 tokenId,
+        address interceptor,
+        bool before
+    );
 
     mapping(address => mapping(uint256 => address[]))[QUEUE_LEN]
         private _interceptors;
@@ -45,7 +57,13 @@ abstract contract InterceptorManager is AccessControl {
             }
         }
         interceptors.push(interceptor);
-        emit UpdageInterceptor(_queueId, _nftAsset, _tokenId, interceptor, true);
+        emit UpdageInterceptor(
+            _queueId,
+            _nftAsset,
+            _tokenId,
+            interceptor,
+            true
+        );
     }
 
     function deleteInterceptor(
@@ -125,7 +143,13 @@ abstract contract InterceptorManager is AccessControl {
             interceptors[findIndex] = lastInterceptorAddr;
         }
         interceptors.pop();
-        emit UpdageInterceptor(queueId, nftAsset, tokenId, findInterceptor, false);
+        emit UpdageInterceptor(
+            queueId,
+            nftAsset,
+            tokenId,
+            findInterceptor,
+            false
+        );
     }
 
     function executeInterceptors(
@@ -152,7 +176,13 @@ abstract contract InterceptorManager is AccessControl {
                 );
             }
 
-            emit ExecuteInterceptor(queueId, nftAsset, tokenId, interceptors[i], before);
+            emit ExecuteInterceptor(
+                queueId,
+                nftAsset,
+                tokenId,
+                interceptors[i],
+                before
+            );
         }
     }
 
